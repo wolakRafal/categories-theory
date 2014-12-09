@@ -21,27 +21,32 @@
 
 package com.robo.category.theory
 
-import org.scalatest._
+import org.scalacheck._
+import org.scalatest.{MustMatchers, WordSpec}
+import org.specs2.mutable.Specification
 
-class CategorySpec extends WordSpec with MustMatchers with OptionValues with Inside with Inspectors {
+class CategorySpec extends WordSpec with MustMatchers {
   import com.robo.category.theory.Category._
 
   "A Category" should {
 
+    val intGen = Gen[Int]
     val f = (i: Int) => i.toString
     val g = (s: String) => s.length
     val h = (i: Int) => i * i
 
     "satisfy associativity" in {
-      forAll { (i: Int) =>
+      Prop.forAll{ (i: Int) =>
         compose(h, compose(g, f))(i) == compose(compose(h, g), f)(i)
-      } //must pass
+        true
+      }
     }
 
     "satisfy identity" in {
-      forAll { (i: Int) =>
+      Prop.forAll{ (i: Int) =>
         compose(f, id[Int])(i) mustEqual compose(id[String], f)(i)
-      } //must pass
+        true
+      }
     }
   }
 }
